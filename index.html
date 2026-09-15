@@ -38,44 +38,6 @@
   <script type="text/javascript">
     pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.6.347/pdf.worker.min.js";
   </script>
-  <script>
-    // Detects a new app version (via version.json) on every launch,
-    // including when opened from an "Add to Home Screen" icon on iOS —
-    // those run as isolated standalone PWAs with their own cache that
-    // survives clearing Safari's regular browsing data. On a version
-    // change, this purges the service worker + cache storage and reloads
-    // once, so a stale install picks up the new build automatically
-    // instead of requiring the icon to be deleted and re-added by hand.
-    (function () {
-      var STORAGE_KEY = 'sshub_app_version';
-      fetch('version.json', { cache: 'no-store' })
-        .then(function (res) { return res.json(); })
-        .then(function (data) {
-          var latest = (data.latestVersionName || '') + '+' + (data.latestVersionCode || '');
-          var stored = localStorage.getItem(STORAGE_KEY);
-          if (stored && stored !== latest) {
-            var tasks = [];
-            if (window.caches) {
-              tasks.push(caches.keys().then(function (keys) {
-                return Promise.all(keys.map(function (k) { return caches.delete(k); }));
-              }));
-            }
-            if (navigator.serviceWorker) {
-              tasks.push(navigator.serviceWorker.getRegistrations().then(function (regs) {
-                return Promise.all(regs.map(function (r) { return r.unregister(); }));
-              }));
-            }
-            Promise.all(tasks).then(function () {
-              localStorage.setItem(STORAGE_KEY, latest);
-              location.reload();
-            });
-          } else {
-            localStorage.setItem(STORAGE_KEY, latest);
-          }
-        })
-        .catch(function () { /* offline on first load — just proceed normally */ });
-    })();
-  </script>
 </head>
 <body>
   <script src="flutter_bootstrap.js" async></script>
