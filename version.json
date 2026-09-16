@@ -1,6 +1,6 @@
 {
   "latestVersionCode": 6,
-  "latestVersionName": "1.0.5",
+  "latestVersionName": "1.0.6-test",
   "downloadUrl": "https://sagebulacan.github.io/student-study-hub-web/StudentStudyHub.apk",
   "releaseNotes": "Switched to HTML renderer for faster Web/PWA startup."
 }
