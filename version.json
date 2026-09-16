@@ -1,6 +1,6 @@
 {
-  "latestVersionCode": 8,
-  "latestVersionName": "1.0.7",
+  "latestVersionCode": 9,
+  "latestVersionName": "1.0.8",
   "downloadUrl": "https://sagebulacan.github.io/student-study-hub-web/StudentStudyHub.apk",
-  "releaseNotes": "Fixed update banner refresh to properly bypass browser HTTP cache."
+  "releaseNotes": "Fixed stale version.json caching in the update checker itself."
 }

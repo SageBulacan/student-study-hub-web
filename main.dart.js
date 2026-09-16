@@ -118657,18 +118657,19 @@ A.aPU.prototype={
 $1(a){this.a.i0("Delete failed")},
 $S:7}
 A.aQ4.prototype={
-N_(){var s=0,r=A.r(t.T),q,p=2,o,n,m,l,k,j,i
+N_(){var s=0,r=A.r(t.T),q,p=2,o,n,m,l,k,j,i,h
 var $async$N_=A.m(function(a,b){if(a===1){o=b
 s=p}while(true)switch(s){case 0:p=4
+n="https://sagebulacan.github.io/student-study-hub-web/version.json?t="+Date.now()
 s=7
-return A.j(A.bd2(A.c2("https://sagebulacan.github.io/student-study-hub-web/version.json",0,null),null).a1c(0,B.Pd),$async$N_)
-case 7:n=b
-if(n.b!==200){q=null
+return A.j(A.bd2(A.c2(n,0,null),null).a1c(0,B.Pd),$async$N_)
+case 7:m=b
+if(m.b!==200){q=null
 s=1
-break}k=n
-m=t.a.a(B.J.eQ(0,A.lx(A.lw(k.e)).c1(0,k.w),null))
-l=A.bF(J.Z(m,"latestVersionName"))
-if(l!=null&&!J.d(l,"1.0.7")){q=l
+break}j=m
+l=t.a.a(B.J.eQ(0,A.lx(A.lw(j.e)).c1(0,j.w),null))
+k=A.bF(J.Z(l,"latestVersionName"))
+if(k!=null&&!J.d(k,"1.0.8")){q=k
 s=1
 break}q=null
 s=1
@@ -118677,7 +118678,7 @@ p=2
 s=6
 break
 case 4:p=3
-i=o
+h=o
 q=null
 s=1
 break
