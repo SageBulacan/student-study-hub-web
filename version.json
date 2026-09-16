@@ -1,6 +1,6 @@
 {
-  "latestVersionCode": 10,
-  "latestVersionName": "1.0.9",
+  "latestVersionCode": 3,
+  "latestVersionName": "1.1.0",
   "downloadUrl": "https://sagebulacan.github.io/student-study-hub-web/StudentStudyHub.apk",
-  "releaseNotes": "Definitive end-to-end test of update mechanism."
+  "releaseNotes": "Final release: notebook redesign, quizzes, deck sharing, security, and performance improvements."
 }
