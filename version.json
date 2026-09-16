@@ -1,6 +1,1 @@
-{
-  "latestVersionCode": 3,
-  "latestVersionName": "1.1.0",
-  "downloadUrl": "https://sagebulacan.github.io/student-study-hub-web/StudentStudyHub.apk",
-  "releaseNotes": "Final release: notebook redesign, quizzes, deck sharing, security, and performance improvements."
-}
+{"app_name":"student_study_hub","version":"1.1.1","build_number":"4","package_name":"student_study_hub"}

@@ -1,0 +1,6 @@
+{
+  "latestVersionCode": 4,
+  "latestVersionName": "1.1.1",
+  "downloadUrl": "https://sagebulacan.github.io/student-study-hub-web/StudentStudyHub.apk",
+  "releaseNotes": "Fixed App Version display in More screen (renamed update-checker file to avoid conflicting with Flutter's own version.json)."
+}

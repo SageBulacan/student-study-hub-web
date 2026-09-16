@@ -118660,7 +118660,7 @@ A.aQ4.prototype={
 N_(){var s=0,r=A.r(t.T),q,p=2,o,n,m,l,k,j,i,h
 var $async$N_=A.m(function(a,b){if(a===1){o=b
 s=p}while(true)switch(s){case 0:p=4
-n="https://sagebulacan.github.io/student-study-hub-web/version.json?t="+Date.now()
+n="https://sagebulacan.github.io/student-study-hub-web/app_release.json?t="+Date.now()
 s=7
 return A.j(A.bd2(A.c2(n,0,null),null).a1c(0,B.Pd),$async$N_)
 case 7:m=b
@@ -118669,7 +118669,7 @@ s=1
 break}j=m
 l=t.a.a(B.J.eQ(0,A.lx(A.lw(j.e)).c1(0,j.w),null))
 k=A.bF(J.Z(l,"latestVersionName"))
-if(k!=null&&!J.d(k,"1.1.0")){q=k
+if(k!=null&&!J.d(k,"1.1.1")){q=k
 s=1
 break}q=null
 s=1
