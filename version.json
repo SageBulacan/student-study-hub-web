@@ -1,6 +1,6 @@
 {
-  "latestVersionCode": 7,
-  "latestVersionName": "1.0.6",
+  "latestVersionCode": 8,
+  "latestVersionName": "1.0.7",
   "downloadUrl": "https://sagebulacan.github.io/student-study-hub-web/StudentStudyHub.apk",
-  "releaseNotes": "Removed unused CanvasKit assets (19MB) for faster caching and startup."
+  "releaseNotes": "Fixed update banner refresh to properly bypass browser HTTP cache."
 }

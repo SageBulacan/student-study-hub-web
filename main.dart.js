@@ -118668,7 +118668,7 @@ s=1
 break}k=n
 m=t.a.a(B.J.eQ(0,A.lx(A.lw(k.e)).c1(0,k.w),null))
 l=A.bF(J.Z(m,"latestVersionName"))
-if(l!=null&&!J.d(l,"1.0.5")){q=l
+if(l!=null&&!J.d(l,"1.0.7")){q=l
 s=1
 break}q=null
 s=1

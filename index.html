@@ -57,7 +57,11 @@
         }));
       }
       Promise.all(tasks).then(function () {
-        location.reload();
+        // A plain location.reload() can still be served from the browser's
+        // regular HTTP cache (separate from the Service Worker cache we
+        // just cleared) — appending a cache-busting query param forces a
+        // genuinely fresh navigation instead.
+        window.location.href = window.location.origin + window.location.pathname + '?refresh=' + Date.now();
       });
     };
   </script>
