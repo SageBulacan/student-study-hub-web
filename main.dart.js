@@ -109658,7 +109658,7 @@ if(J.d(J.Z(p,"success"),!0)){o=q.c
 if(o!=null)A.BI(o).uy(0,"/",null)}else q.U(new A.aYg(q,p))
 return A.o(null,r)}})
 return A.p($async$Jq,r)},
-M(a){var s,r,q=this,p=null,o=A.b1(p,new A.tD(A.aGI(p,p,new A.Ap("assets/images/logo.png",p,p)),p,p,p,p,p,p,B.d2,p,B.jd,B.a_,B.cI,!1,!1,p),B.c8,p,p,B.Ja,p,120,p,p,p,p,120),n=A.J("Student Study Hub",p,p,p,A.X(p,24,B.ar,p),p,p),m=A.X(p,16,B.h,p)
+M(a){var s,r,q=this,p=null,o=A.b1(p,new A.tD(A.aGI(p,p,new A.Ap("assets/images/logo.png",p,p)),p,p,p,p,p,p,B.d2,p,B.jd,B.a_,B.cI,!1,!1,p),B.c8,p,p,B.Ja,p,120,p,p,p,p,120),n=A.J("Student Study Hub v2 TEST",p,p,p,A.X(p,24,B.ar,p),p,p),m=A.X(p,16,B.h,p)
 m=A.r_(!0,B.by,!1,p,!0,B.G,p,A.vM(),q.d,p,p,p,p,p,2,A.Cp(p,"Student ID"),B.v,!0,p,!0,p,!1,p,B.bW,p,p,p,p,p,p,p,1,p,p,!1,"\u2022",p,p,p,p,p,!1,p,!1,p,!0,p,B.V,p,p,B.bM,B.bu,p,p,p,p,p,p,m,B.at,p,B.dd,p,p,p,p)
 s=A.X(p,16,B.h,p)
 s=A.b([o,B.e7,n,B.pB,m,B.da,A.r_(!0,B.by,!1,p,!0,B.G,p,A.vM(),q.e,p,p,p,p,p,2,A.Cp(p,"Password"),B.v,!0,p,!0,p,!1,p,B.bW,p,p,p,p,p,p,p,1,p,p,!0,"\u2022",p,p,p,p,p,!1,p,!1,p,!0,p,B.V,p,p,B.bM,B.bu,p,p,p,p,p,p,s,B.at,p,B.dd,p,p,p,p),B.b6],t.p)
@@ -114285,7 +114285,7 @@ s=1
 break}k=n
 m=t.a.a(B.J.eF(0,A.lt(A.lr(k.e)).bX(0,k.w),null))
 l=A.bI(J.Z(m,"latestVersionName"))
-if(l!=null&&!J.d(l,"1.0.3")){q=l
+if(l!=null&&!J.d(l,"1.0.4")){q=l
 s=1
 break}q=null
 s=1
