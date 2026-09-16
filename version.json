@@ -1,1 +1,6 @@
-{"app_name":"student_study_hub","version":"1.0.1","build_number":"2","package_name":"student_study_hub"}
+{
+  "latestVersionCode": 4,
+  "latestVersionName": "1.0.3",
+  "downloadUrl": "https://sagebulacan.github.io/student-study-hub-web/StudentStudyHub.apk",
+  "releaseNotes": "One-tap update banner for Web/PWA, offline reliability fixes."
+}

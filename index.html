@@ -38,6 +38,29 @@
   <script type="text/javascript">
     pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.6.347/pdf.worker.min.js";
   </script>
+  <script>
+    // Called ONLY when the user explicitly taps "Refresh Now" in the app's
+    // update banner (never automatically) — purges the service worker +
+    // cache storage, then reloads once to fetch the latest deployed build.
+    // Manual, user-triggered refresh avoids the reload-loop bug we hit
+    // earlier with fully automatic update detection on iOS standalone PWAs.
+    window.forceAppRefresh = function () {
+      var tasks = [];
+      if (window.caches) {
+        tasks.push(caches.keys().then(function (keys) {
+          return Promise.all(keys.map(function (k) { return caches.delete(k); }));
+        }));
+      }
+      if (navigator.serviceWorker) {
+        tasks.push(navigator.serviceWorker.getRegistrations().then(function (regs) {
+          return Promise.all(regs.map(function (r) { return r.unregister(); }));
+        }));
+      }
+      Promise.all(tasks).then(function () {
+        location.reload();
+      });
+    };
+  </script>
 </head>
 <body>
   <script src="flutter_bootstrap.js" async></script>
