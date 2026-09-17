@@ -1,6 +1,6 @@
 {
-  "latestVersionCode": 7,
-  "latestVersionName": "1.2.1",
+  "latestVersionCode": 8,
+  "latestVersionName": "1.2.2",
   "downloadUrl": "https://sagebulacan.github.io/student-study-hub-web/StudentStudyHub.apk",
-  "releaseNotes": "Native browser PDF viewer for Web (faster, no CanvasKit dependency), restored fast HTML renderer startup."
+  "releaseNotes": "Fixed PDF viewer sizing on Web (was showing thumbnail-only view)."
 }
