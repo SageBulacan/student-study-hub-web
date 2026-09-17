@@ -1,6 +1,6 @@
 {
-  "latestVersionCode": 6,
-  "latestVersionName": "1.2.0",
+  "latestVersionCode": 7,
+  "latestVersionName": "1.2.1",
   "downloadUrl": "https://sagebulacan.github.io/student-study-hub-web/StudentStudyHub.apk",
-  "releaseNotes": "Improved dictionary search ranking (exact match first), fixed Study Materials access control, PDF viewer stability, and Edit Student feature in admin panel."
+  "releaseNotes": "Native browser PDF viewer for Web (faster, no CanvasKit dependency), restored fast HTML renderer startup."
 }
