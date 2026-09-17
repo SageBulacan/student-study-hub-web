@@ -37,6 +37,36 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.6.347/pdf.min.js"></script>
   <script type="text/javascript">
     pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.6.347/pdf.worker.min.js";
+
+    // Renders every page of a PDF (given as raw bytes) into <canvas>
+    // elements appended to the container div — a custom, in-app viewer with
+    // no native browser PDF chrome, so there's no built-in Save/Download
+    // button exposed to the student (unlike opening the PDF directly via
+    // the browser's own PDF viewer).
+    window.renderPdfToContainer = async function (containerId, bytes) {
+      const container = document.getElementById(containerId);
+      if (!container) return;
+      container.innerHTML = '';
+      container.oncontextmenu = function () { return false; };
+
+      const pdf = await pdfjsLib.getDocument({ data: bytes }).promise;
+      for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
+        const page = await pdf.getPage(pageNum);
+        const viewport = page.getViewport({ scale: 1.5 });
+        const canvas = document.createElement('canvas');
+        canvas.width = viewport.width;
+        canvas.height = viewport.height;
+        canvas.style.display = 'block';
+        canvas.style.margin = '0 auto 14px auto';
+        canvas.style.maxWidth = '100%';
+        canvas.style.height = 'auto';
+        canvas.style.boxShadow = '0 2px 8px rgba(0,0,0,0.18)';
+        canvas.oncontextmenu = function () { return false; };
+        const ctx = canvas.getContext('2d');
+        await page.render({ canvasContext: ctx, viewport: viewport }).promise;
+        container.appendChild(canvas);
+      }
+    };
   </script>
   <script>
     // Called ONLY when the user explicitly taps "Refresh Now" in the app's
