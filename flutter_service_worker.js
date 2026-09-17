@@ -3,11 +3,11 @@ const MANIFEST = 'flutter-app-manifest';
 const TEMP = 'flutter-temp-cache';
 const CACHE_NAME = 'flutter-app-cache';
 
-const RESOURCES = {"flutter_bootstrap.js": "86cd443bd0ff8e77136eb6b17bc5053f",
+const RESOURCES = {"flutter_bootstrap.js": "e2306b31b7ed752022a8db4721f7e4e5",
 "version.json": "9b6b232b352a5c17251c1d8b60ce1feb",
 "index.html": "164def8a5f993c5f5a9ff5a416e9a7f1",
 "/": "164def8a5f993c5f5a9ff5a416e9a7f1",
-"main.dart.js": "58fbff40f6d7a0d51395e34d09bebf6b",
+"main.dart.js": "333ae9a4bdfd01620298bb92ce9c28b5",
 "sqlite3.wasm": "2e9fc1ccbb9d15199fccf405b0ceee53",
 "flutter.js": "f393d3c16b631f36852323de8e583132",
 "favicon.png": "5dcef449791fa27946b3d35ad8803796",
@@ -35,6 +35,16 @@ const RESOURCES = {"flutter_bootstrap.js": "86cd443bd0ff8e77136eb6b17bc5053f",
 "assets/assets/images/logo.png": "30c0a81ada0dbea62e4e2c7d94cb290e",
 "assets/assets/fonts/KleeOne-SemiBold-Subset.ttf": "57a67fc4c6fbba5d19af3e6f8462915b",
 "assets/assets/fonts/KleeOne-Regular-Subset.ttf": "1beb046685a6f7a83a56c78fd3c05ef8",
+"canvaskit/skwasm.js": "694fda5704053957c2594de355805228",
+"canvaskit/skwasm.js.symbols": "262f4827a1317abb59d71d6c587a93e2",
+"canvaskit/canvaskit.js.symbols": "48c83a2ce573d9692e8d970e288d75f7",
+"canvaskit/skwasm.wasm": "9f0c0c02b82a910d12ce0543ec130e60",
+"canvaskit/chromium/canvaskit.js.symbols": "a012ed99ccba193cf96bb2643003f6fc",
+"canvaskit/chromium/canvaskit.js": "671c6b4f8fcc199dcc551c7bb125f239",
+"canvaskit/chromium/canvaskit.wasm": "b1ac05b29c127d86df4bcfbf50dd902a",
+"canvaskit/canvaskit.js": "66177750aff65a66cb07bb44b8c6422b",
+"canvaskit/canvaskit.wasm": "1f237a213d7370cf95f443d896176460",
+"canvaskit/skwasm.worker.js": "89990e8c92bcb123999aa81f7e203b1c"};
 // The application shell files that are downloaded before a service worker can
 // start.
 const CORE = ["main.dart.js",

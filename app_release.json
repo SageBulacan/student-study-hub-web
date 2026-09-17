@@ -1,6 +1,6 @@
 {
-  "latestVersionCode": 4,
-  "latestVersionName": "1.1.1",
+  "latestVersionCode": 5,
+  "latestVersionName": "1.1.2-canvaskit-test",
   "downloadUrl": "https://sagebulacan.github.io/student-study-hub-web/StudentStudyHub.apk",
-  "releaseNotes": "Fixed App Version display in More screen (renamed update-checker file to avoid conflicting with Flutter's own version.json)."
+  "releaseNotes": "Testing CanvasKit renderer to diagnose PDF viewer crash."
 }
