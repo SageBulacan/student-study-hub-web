@@ -1,6 +1,6 @@
 {
-  "latestVersionCode": 9,
-  "latestVersionName": "1.2.3",
+  "latestVersionCode": 10,
+  "latestVersionName": "1.2.4",
   "downloadUrl": "https://sagebulacan.github.io/student-study-hub-web/StudentStudyHub.apk",
-  "releaseNotes": "PDF viewer now opens in a new tab on Web using Safari's full native viewer."
+  "releaseNotes": "Fixed PDF popup blocking on Web by opening the tab synchronously on tap."
 }
