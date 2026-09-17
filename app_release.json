@@ -1,6 +1,6 @@
 {
-  "latestVersionCode": 8,
-  "latestVersionName": "1.2.2",
+  "latestVersionCode": 9,
+  "latestVersionName": "1.2.3",
   "downloadUrl": "https://sagebulacan.github.io/student-study-hub-web/StudentStudyHub.apk",
-  "releaseNotes": "Fixed PDF viewer sizing on Web (was showing thumbnail-only view)."
+  "releaseNotes": "PDF viewer now opens in a new tab on Web using Safari's full native viewer."
 }
