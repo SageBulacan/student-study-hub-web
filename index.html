@@ -77,19 +77,44 @@
       }
 
       // --- Zoom: pinch (touch), ctrl+wheel (trackpad/desktop), double-tap ---
-      let scale = 1, startDist = 0, startScale = 1;
+      // Panning: one-finger drag once zoomed in.
+      let scale = 1, panX = 0, panY = 0;
+      let startDist = 0, startScale = 1, startMidX = 0, startMidY = 0;
+      let startPanX = 0, startPanY = 0;
+      let dragging = false, dragStartX = 0, dragStartY = 0;
+
+      function clampPan() {
+        const rect = container.getBoundingClientRect();
+        const contentW = wrapper.scrollWidth * scale;
+        const contentH = wrapper.scrollHeight * scale;
+        // Allow panning until content edge reaches container edge, no further.
+        const minX = Math.min(0, rect.width - contentW);
+        const minY = Math.min(0, rect.height - contentH);
+        panX = Math.min(0, Math.max(panX, minX));
+        panY = Math.min(0, Math.max(panY, minY));
+      }
 
       function applyTransform() {
-        wrapper.style.transform = 'scale(' + scale + ')';
+        wrapper.style.transform = 'translate(' + panX + 'px,' + panY + 'px) scale(' + scale + ')';
       }
 
       container.addEventListener('touchstart', function (e) {
         if (e.touches.length === 2) {
+          const rect = container.getBoundingClientRect();
           startDist = Math.hypot(
             e.touches[0].clientX - e.touches[1].clientX,
             e.touches[0].clientY - e.touches[1].clientY
           );
           startScale = scale;
+          startMidX = (e.touches[0].clientX + e.touches[1].clientX) / 2 - rect.left;
+          startMidY = (e.touches[0].clientY + e.touches[1].clientY) / 2 - rect.top;
+          startPanX = panX;
+          startPanY = panY;
+          dragging = false;
+        } else if (e.touches.length === 1 && scale > 1) {
+          dragging = true;
+          dragStartX = e.touches[0].clientX - panX;
+          dragStartY = e.touches[0].clientY - panY;
         }
       }, { passive: true });
 
@@ -100,15 +125,37 @@
             e.touches[0].clientX - e.touches[1].clientX,
             e.touches[0].clientY - e.touches[1].clientY
           );
-          scale = Math.min(Math.max(startScale * (dist / startDist), 1), 4);
+          const newScale = Math.min(Math.max(startScale * (dist / startDist), 1), 4);
+          // Keep the point under the fingers fixed while scaling.
+          panX = startMidX - (startMidX - startPanX) * (newScale / startScale);
+          panY = startMidY - (startMidY - startPanY) * (newScale / startScale);
+          scale = newScale;
+          clampPan();
+          applyTransform();
+        } else if (e.touches.length === 1 && dragging) {
+          e.preventDefault();
+          panX = e.touches[0].clientX - dragStartX;
+          panY = e.touches[0].clientY - dragStartY;
+          clampPan();
           applyTransform();
         }
       }, { passive: false });
 
+      container.addEventListener('touchend', function (e) {
+        if (e.touches.length === 0) dragging = false;
+      });
+
       container.addEventListener('wheel', function (e) {
         if (e.ctrlKey) {
           e.preventDefault();
-          scale = Math.min(Math.max(scale - e.deltaY * 0.01, 1), 4);
+          const rect = container.getBoundingClientRect();
+          const mx = e.clientX - rect.left;
+          const my = e.clientY - rect.top;
+          const newScale = Math.min(Math.max(scale - e.deltaY * 0.01, 1), 4);
+          panX = mx - (mx - panX) * (newScale / scale);
+          panY = my - (my - panY) * (newScale / scale);
+          scale = newScale;
+          clampPan();
           applyTransform();
         }
       }, { passive: false });
@@ -118,7 +165,13 @@
         if (e.touches.length > 0) return;
         const now = Date.now();
         if (now - lastTap < 300) {
-          scale = scale > 1 ? 1 : 2;
+          if (scale > 1) {
+            scale = 1;
+            panX = 0;
+            panY = 0;
+          } else {
+            scale = 2;
+          }
           applyTransform();
         }
         lastTap = now;

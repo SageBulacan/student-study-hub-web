@@ -1,6 +1,6 @@
 {
-  "latestVersionCode": 12,
-  "latestVersionName": "1.2.6",
+  "latestVersionCode": 13,
+  "latestVersionName": "1.2.7",
   "downloadUrl": "https://sagebulacan.github.io/student-study-hub-web/StudentStudyHub.apk",
-  "releaseNotes": "PDF zoom, larger quiz option images"
+  "releaseNotes": "Fixed PDF zoom pan/drag and zoom-center positioning"
 }
