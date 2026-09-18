@@ -59,112 +59,22 @@
       container.appendChild(wrapper);
 
       const pdf = await pdfjsLib.getDocument({ data: bytes }).promise;
-      const dpr = window.devicePixelRatio || 1;
-      const baseScale = 2.0;
-      const MAX_CANVAS_DIMENSION = 4096;
-      const MAX_CANVAS_AREA = 16000000; // safety margin under the ~16.77M WebKit limit
-      const MAX_CONCURRENT_RENDERED = 8; // cap simultaneously rendered pages -- bounds
-                                          // memory on long PDFs (60+ pages rendered all at
-                                          // once was crashing Safari/Chrome on iOS)
-
-      const pageObjs = [];
-      const pageDivs = [];
-      const renderedCanvases = new Map(); // pageNum -> canvas element
-      const visiblePages = new Set();     // pageNum currently intersecting the viewport
-
-      // First pass: create correctly-sized placeholder divs for every page
-      // (cheap -- viewport dimensions only, no actual rendering) so
-      // scrolling and total document length feel correct immediately.
       for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
         const page = await pdf.getPage(pageNum);
-        const displayViewport = page.getViewport({ scale: baseScale });
-        pageObjs.push(page);
-
-        const pageDiv = document.createElement('div');
-        pageDiv.dataset.pageNum = String(pageNum);
-        pageDiv.style.margin = '0 auto 14px auto';
-        pageDiv.style.maxWidth = displayViewport.width + 'px';
-        pageDiv.style.width = '100%';
-        pageDiv.style.aspectRatio = displayViewport.width + ' / ' + displayViewport.height;
-        pageDiv.style.boxShadow = '0 2px 8px rgba(0,0,0,0.18)';
-        pageDiv.style.background = 'rgba(0,0,0,0.04)';
-        pageDiv.oncontextmenu = function () { return false; };
-        wrapper.appendChild(pageDiv);
-        pageDivs.push(pageDiv);
-      }
-
-      async function renderPage(pageNum) {
-        if (renderedCanvases.has(pageNum)) return;
-        const page = pageObjs[pageNum - 1];
-        const pageDiv = pageDivs[pageNum - 1];
-
-        let renderScale = baseScale * dpr;
-        let renderViewport = page.getViewport({ scale: renderScale });
-        if (renderViewport.width > MAX_CANVAS_DIMENSION || renderViewport.height > MAX_CANVAS_DIMENSION) {
-          const dimRatio = MAX_CANVAS_DIMENSION / Math.max(renderViewport.width, renderViewport.height);
-          renderScale *= dimRatio;
-          renderViewport = page.getViewport({ scale: renderScale });
-        }
-        if (renderViewport.width * renderViewport.height > MAX_CANVAS_AREA) {
-          const areaRatio = Math.sqrt(MAX_CANVAS_AREA / (renderViewport.width * renderViewport.height));
-          renderScale *= areaRatio;
-          renderViewport = page.getViewport({ scale: renderScale });
-        }
-
+        const viewport = page.getViewport({ scale: 1.5 });
         const canvas = document.createElement('canvas');
-        canvas.width = Math.floor(renderViewport.width);
-        canvas.height = Math.floor(renderViewport.height);
+        canvas.width = viewport.width;
+        canvas.height = viewport.height;
         canvas.style.display = 'block';
-        canvas.style.width = '100%';
-        canvas.style.height = '100%';
+        canvas.style.margin = '0 auto 14px auto';
+        canvas.style.maxWidth = '100%';
+        canvas.style.height = 'auto';
+        canvas.style.boxShadow = '0 2px 8px rgba(0,0,0,0.18)';
         canvas.oncontextmenu = function () { return false; };
         const ctx = canvas.getContext('2d');
-        renderedCanvases.set(pageNum, canvas); // mark early to avoid duplicate triggers
-        try {
-          await page.render({ canvasContext: ctx, viewport: renderViewport }).promise;
-          pageDiv.appendChild(canvas);
-        } catch (e) {
-          renderedCanvases.delete(pageNum);
-          return;
-        }
-        evictFarPages(pageNum);
+        await page.render({ canvasContext: ctx, viewport: viewport }).promise;
+        wrapper.appendChild(canvas);
       }
-
-      function unrenderPage(pageNum) {
-        const canvas = renderedCanvases.get(pageNum);
-        if (!canvas) return;
-        canvas.remove();
-        renderedCanvases.delete(pageNum);
-      }
-
-      // Once more than MAX_CONCURRENT_RENDERED pages are rendered, free the
-      // ones farthest from the current page that are no longer visible --
-      // keeps memory bounded even if the student scrolls through all 60+
-      // pages in one session.
-      function evictFarPages(currentPageNum) {
-        if (renderedCanvases.size <= MAX_CONCURRENT_RENDERED) return;
-        const candidates = Array.from(renderedCanvases.keys()).filter(function (p) { return !visiblePages.has(p); });
-        candidates.sort(function (a, b) {
-          return Math.abs(b - currentPageNum) - Math.abs(a - currentPageNum);
-        });
-        while (renderedCanvases.size > MAX_CONCURRENT_RENDERED && candidates.length > 0) {
-          unrenderPage(candidates.shift());
-        }
-      }
-
-      const pageObserver = new IntersectionObserver(function (entries) {
-        entries.forEach(function (entry) {
-          const pageNum = parseInt(entry.target.dataset.pageNum, 10);
-          if (entry.isIntersecting) {
-            visiblePages.add(pageNum);
-            renderPage(pageNum);
-          } else {
-            visiblePages.delete(pageNum);
-          }
-        });
-      }, { root: container, rootMargin: '800px 0px', threshold: 0.01 });
-
-      pageDivs.forEach(function (div) { pageObserver.observe(div); });
 
       // --- Zoom: pinch (touch), ctrl+wheel (trackpad/desktop), double-tap ---
       // Panning: one-finger drag once zoomed in.

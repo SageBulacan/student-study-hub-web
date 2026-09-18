@@ -1,6 +1,6 @@
 {
-  "latestVersionCode": 16,
-  "latestVersionName": "1.2.10",
+  "latestVersionCode": 17,
+  "latestVersionName": "1.2.11",
   "downloadUrl": "https://sagebulacan.github.io/student-study-hub-web/StudentStudyHub.apk",
-  "releaseNotes": "Fixed crash on long PDFs (60+ pages) via lazy page rendering"
+  "releaseNotes": "Reverted PDF viewer to stable simple rendering (pan/zoom working, standard resolution)"
 }
