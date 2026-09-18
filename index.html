@@ -49,7 +49,14 @@
       container.innerHTML = '';
       container.oncontextmenu = function () { return false; };
       container.style.overflow = 'auto';
-      container.style.touchAction = 'pan-x pan-y pinch-zoom';
+      // IMPORTANT: 'pinch-zoom' is deliberately NOT included here. Including
+      // it previously let the native browser pinch-zoom run at the same time
+      // as our own JS-based pinch-zoom below -- the two fought each other,
+      // causing the zoomed view to jump to the wrong page and making panning
+      // feel broken/random. 'pan-y' still allows normal one-finger vertical
+      // scrolling through pages; all pinch/zoom is handled entirely by our
+      // own touch handlers instead.
+      container.style.touchAction = 'pan-y';
 
       // Wrapper that gets transformed (scaled/panned) for zoom, separate
       // from the scrolling container itself.
