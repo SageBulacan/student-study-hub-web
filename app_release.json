@@ -1,6 +1,6 @@
 {
-  "latestVersionCode": 13,
-  "latestVersionName": "1.2.7",
+  "latestVersionCode": 14,
+  "latestVersionName": "1.2.8",
   "downloadUrl": "https://sagebulacan.github.io/student-study-hub-web/StudentStudyHub.apk",
-  "releaseNotes": "Fixed PDF zoom pan/drag and zoom-center positioning"
+  "releaseNotes": "Sharper PDF rendering resolution for clearer text when zoomed"
 }
