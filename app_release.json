@@ -1,6 +1,6 @@
 {
-  "latestVersionCode": 11,
-  "latestVersionName": "1.2.5",
+  "latestVersionCode": 12,
+  "latestVersionName": "1.2.6",
   "downloadUrl": "https://sagebulacan.github.io/student-study-hub-web/StudentStudyHub.apk",
-  "releaseNotes": "Custom in-app PDF viewer (PDF.js canvas rendering) for Web to remove native browser save/download controls."
+  "releaseNotes": "PDF zoom, larger quiz option images"
 }
