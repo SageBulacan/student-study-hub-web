@@ -1,6 +1,6 @@
 {
-  "latestVersionCode": 14,
-  "latestVersionName": "1.2.8",
+  "latestVersionCode": 15,
+  "latestVersionName": "1.2.9",
   "downloadUrl": "https://sagebulacan.github.io/student-study-hub-web/StudentStudyHub.apk",
-  "releaseNotes": "Sharper PDF rendering resolution for clearer text when zoomed"
+  "releaseNotes": "Fixed PDF viewer crash by clamping render resolution to safe canvas limits"
 }

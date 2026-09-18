@@ -59,21 +59,37 @@
       container.appendChild(wrapper);
 
       const pdf = await pdfjsLib.getDocument({ data: bytes }).promise;
-      // Render at a much higher intrinsic resolution than the CSS display
-      // size, so pinch-zooming reveals real detail instead of just
-      // stretching a low-res raster (which looked blurry, especially for
-      // fine Japanese characters). We combine a higher base PDF scale with
-      // devicePixelRatio, then size the canvas down via CSS.
+      // Render at a higher intrinsic resolution than the CSS display size,
+      // so pinch-zooming reveals real detail instead of stretching a
+      // low-res raster. Clamped to stay well under WebKit/Safari's canvas
+      // size limits (~4096px per side, ~16.7M total pixels) -- exceeding
+      // these caused crashes on iOS.
       const dpr = window.devicePixelRatio || 1;
-      const baseScale = 2.5; // higher than the display scale, headroom for zoom
-      const renderScale = baseScale * dpr;
+      const baseScale = 2.0;
+      const MAX_CANVAS_DIMENSION = 4096;
+      const MAX_CANVAS_AREA = 16000000; // safety margin under the ~16.77M limit
       for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
         const page = await pdf.getPage(pageNum);
         const displayViewport = page.getViewport({ scale: baseScale });
-        const renderViewport = page.getViewport({ scale: renderScale });
+
+        let renderScale = baseScale * dpr;
+        let renderViewport = page.getViewport({ scale: renderScale });
+
+        // Clamp down if this would exceed safe canvas limits.
+        if (renderViewport.width > MAX_CANVAS_DIMENSION || renderViewport.height > MAX_CANVAS_DIMENSION) {
+          const dimRatio = MAX_CANVAS_DIMENSION / Math.max(renderViewport.width, renderViewport.height);
+          renderScale *= dimRatio;
+          renderViewport = page.getViewport({ scale: renderScale });
+        }
+        if (renderViewport.width * renderViewport.height > MAX_CANVAS_AREA) {
+          const areaRatio = Math.sqrt(MAX_CANVAS_AREA / (renderViewport.width * renderViewport.height));
+          renderScale *= areaRatio;
+          renderViewport = page.getViewport({ scale: renderScale });
+        }
+
         const canvas = document.createElement('canvas');
-        canvas.width = renderViewport.width;
-        canvas.height = renderViewport.height;
+        canvas.width = Math.floor(renderViewport.width);
+        canvas.height = Math.floor(renderViewport.height);
         canvas.style.display = 'block';
         canvas.style.margin = '0 auto 14px auto';
         canvas.style.width = displayViewport.width + 'px';
