@@ -48,6 +48,15 @@
       if (!container) return;
       container.innerHTML = '';
       container.oncontextmenu = function () { return false; };
+      container.style.overflow = 'auto';
+      container.style.touchAction = 'pan-x pan-y pinch-zoom';
+
+      // Wrapper that gets transformed (scaled/panned) for zoom, separate
+      // from the scrolling container itself.
+      const wrapper = document.createElement('div');
+      wrapper.style.transformOrigin = '0 0';
+      wrapper.style.willChange = 'transform';
+      container.appendChild(wrapper);
 
       const pdf = await pdfjsLib.getDocument({ data: bytes }).promise;
       for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
@@ -64,8 +73,56 @@
         canvas.oncontextmenu = function () { return false; };
         const ctx = canvas.getContext('2d');
         await page.render({ canvasContext: ctx, viewport: viewport }).promise;
-        container.appendChild(canvas);
+        wrapper.appendChild(canvas);
       }
+
+      // --- Zoom: pinch (touch), ctrl+wheel (trackpad/desktop), double-tap ---
+      let scale = 1, startDist = 0, startScale = 1;
+
+      function applyTransform() {
+        wrapper.style.transform = 'scale(' + scale + ')';
+      }
+
+      container.addEventListener('touchstart', function (e) {
+        if (e.touches.length === 2) {
+          startDist = Math.hypot(
+            e.touches[0].clientX - e.touches[1].clientX,
+            e.touches[0].clientY - e.touches[1].clientY
+          );
+          startScale = scale;
+        }
+      }, { passive: true });
+
+      container.addEventListener('touchmove', function (e) {
+        if (e.touches.length === 2) {
+          e.preventDefault();
+          const dist = Math.hypot(
+            e.touches[0].clientX - e.touches[1].clientX,
+            e.touches[0].clientY - e.touches[1].clientY
+          );
+          scale = Math.min(Math.max(startScale * (dist / startDist), 1), 4);
+          applyTransform();
+        }
+      }, { passive: false });
+
+      container.addEventListener('wheel', function (e) {
+        if (e.ctrlKey) {
+          e.preventDefault();
+          scale = Math.min(Math.max(scale - e.deltaY * 0.01, 1), 4);
+          applyTransform();
+        }
+      }, { passive: false });
+
+      let lastTap = 0;
+      container.addEventListener('touchend', function (e) {
+        if (e.touches.length > 0) return;
+        const now = Date.now();
+        if (now - lastTap < 300) {
+          scale = scale > 1 ? 1 : 2;
+          applyTransform();
+        }
+        lastTap = now;
+      });
     };
   </script>
   <script>
