@@ -31,13 +31,6 @@
   <link rel="icon" type="image/png" href="favicon.png"/>
 
   <title>Student Study Hub</title>
-  <!-- Disables WebKit/Safari's native whole-page pinch-zoom, which was
-       fighting our own custom JS pinch-zoom inside the PDF viewer (two
-       zoom mechanisms running at once caused the zoomed view to jump to
-       the wrong page and made panning feel broken). Our PDF viewer's own
-       touch handlers remain the only zoom mechanism, scoped to just the
-       PDF container. -->
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <link rel="manifest" href="manifest.json">
 
   <!-- Required by syncfusion_flutter_pdfviewer for rendering PDFs on web. -->
@@ -56,14 +49,7 @@
       container.innerHTML = '';
       container.oncontextmenu = function () { return false; };
       container.style.overflow = 'auto';
-      // IMPORTANT: 'pinch-zoom' is deliberately NOT included here. Including
-      // it previously let the native browser pinch-zoom run at the same time
-      // as our own JS-based pinch-zoom below -- the two fought each other,
-      // causing the zoomed view to jump to the wrong page and making panning
-      // feel broken/random. 'pan-y' still allows normal one-finger vertical
-      // scrolling through pages; all pinch/zoom is handled entirely by our
-      // own touch handlers instead.
-      container.style.touchAction = 'pan-y';
+      container.style.touchAction = 'pan-x pan-y pinch-zoom';
 
       // Wrapper that gets transformed (scaled/panned) for zoom, separate
       // from the scrolling container itself.

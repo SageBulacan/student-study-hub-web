@@ -1,6 +1,6 @@
 {
-  "latestVersionCode": 19,
-  "latestVersionName": "1.2.13",
+  "latestVersionCode": 20,
+  "latestVersionName": "1.2.14",
   "downloadUrl": "https://sagebulacan.github.io/student-study-hub-web/StudentStudyHub.apk",
-  "releaseNotes": "Fixed PDF zoom jump bug: disabled native page pinch-zoom that was conflicting with custom PDF zoom"
+  "releaseNotes": "Reverted PDF zoom to last known-working configuration"
 }
