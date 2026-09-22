@@ -1,6 +1,6 @@
 {
-  "latestVersionCode": 20,
-  "latestVersionName": "1.2.14",
+  "latestVersionCode": 21,
+  "latestVersionName": "1.2.15",
   "downloadUrl": "https://sagebulacan.github.io/student-study-hub-web/StudentStudyHub.apk",
-  "releaseNotes": "Reverted PDF zoom to last known-working configuration"
+  "releaseNotes": "Study materials are now grouped by category"
 }
