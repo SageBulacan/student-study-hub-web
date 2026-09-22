@@ -1,6 +1,6 @@
 {
-  "latestVersionCode": 15,
-  "latestVersionName": "1.2.15",
+  "latestVersionCode": 16,
+  "latestVersionName": "1.2.16",
   "downloadUrl": "https://sagebulacan.github.io/student-study-hub-web/StudentStudyHub.apk",
-  "releaseNotes": "PDF viewer fixes (zoom, pan, sharper text, crash fix on long PDFs), larger quiz images, materials now grouped by category"
+  "releaseNotes": "New app icon"
 }
