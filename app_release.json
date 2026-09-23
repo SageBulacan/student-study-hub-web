@@ -1,6 +1,6 @@
 {
-  "latestVersionCode": 16,
-  "latestVersionName": "1.2.16",
+  "latestVersionCode": 17,
+  "latestVersionName": "1.2.17",
   "downloadUrl": "https://sagebulacan.github.io/student-study-hub-web/StudentStudyHub.apk",
-  "releaseNotes": "New app icon"
+  "releaseNotes": "Cleaner hiragana/katakana stroke order animation (thinner strokes, character guide, numbered current stroke)"
 }
