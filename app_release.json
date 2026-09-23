@@ -1,6 +1,6 @@
 {
-  "latestVersionCode": 999,
-  "latestVersionName": "1.2.999-TEST",
+  "latestVersionCode": 16,
+  "latestVersionName": "1.2.16",
   "downloadUrl": "https://sagebulacan.github.io/student-study-hub-web/StudentStudyHub.apk",
-  "releaseNotes": "This is a TEST update trigger to verify Update Now works on both platforms."
+  "releaseNotes": "New app icon"
 }
