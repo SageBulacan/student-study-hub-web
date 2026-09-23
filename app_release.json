@@ -1,6 +1,6 @@
 {
-  "latestVersionCode": 17,
-  "latestVersionName": "1.2.17",
+  "latestVersionCode": 18,
+  "latestVersionName": "1.2.18",
   "downloadUrl": "https://sagebulacan.github.io/student-study-hub-web/StudentStudyHub.apk",
-  "releaseNotes": "Cleaner hiragana/katakana stroke order animation (thinner strokes, character guide, numbered current stroke)"
+  "releaseNotes": "Fixed bold text in quizzes (font has no true bold weight, now shown as accent color instead)"
 }
