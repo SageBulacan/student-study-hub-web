@@ -1,6 +1,6 @@
 {
-  "latestVersionCode": 20,
-  "latestVersionName": "1.2.20",
+  "latestVersionCode": 21,
+  "latestVersionName": "1.2.21",
   "downloadUrl": "https://sagebulacan.github.io/student-study-hub-web/StudentStudyHub.apk",
-  "releaseNotes": "Added search bar to Study Materials"
+  "releaseNotes": "Fixed Refresh Now not fully applying updates in standalone (Add to Home Screen) mode"
 }

@@ -185,22 +185,39 @@
     // Manual, user-triggered refresh avoids the reload-loop bug we hit
     // earlier with fully automatic update detection on iOS standalone PWAs.
     window.forceAppRefresh = function () {
-      var tasks = [];
-      if (window.caches) {
-        tasks.push(caches.keys().then(function (keys) {
-          return Promise.all(keys.map(function (k) { return caches.delete(k); }));
-        }));
-      }
-      if (navigator.serviceWorker) {
-        tasks.push(navigator.serviceWorker.getRegistrations().then(function (regs) {
-          return Promise.all(regs.map(function (r) { return r.unregister(); }));
-        }));
-      }
-      Promise.all(tasks).then(function () {
+      // Force-refetch the critical shell files with {cache: 'reload'} FIRST,
+      // bypassing the browser's low-level HTTP cache (a layer separate from
+      // -- and invisible to -- the Cache Storage API cleared below). Without
+      // this, the newly re-registered service worker's own precache fetch
+      // for these files can silently pull a stale copy back out of HTTP
+      // cache even right after Cache Storage was fully cleared -- this was
+      // the cause of "Refresh Now" appearing to do nothing in standalone
+      // (Add to Home Screen) mode, since that context seems less likely to
+      // have its HTTP cache separately cleared than a regular browser tab.
+      var basePath = window.location.pathname.replace(/[^/]*$/, '');
+      var baseUrl = window.location.origin + basePath;
+      var criticalFiles = ['', 'main.dart.js', 'flutter_bootstrap.js', 'flutter_service_worker.js'];
+      var refetchTasks = criticalFiles.map(function (f) {
+        return fetch(baseUrl + f, { cache: 'reload' }).catch(function () {});
+      });
+
+      Promise.all(refetchTasks).then(function () {
+        var tasks = [];
+        if (window.caches) {
+          tasks.push(caches.keys().then(function (keys) {
+            return Promise.all(keys.map(function (k) { return caches.delete(k); }));
+          }));
+        }
+        if (navigator.serviceWorker) {
+          tasks.push(navigator.serviceWorker.getRegistrations().then(function (regs) {
+            return Promise.all(regs.map(function (r) { return r.unregister(); }));
+          }));
+        }
+        return Promise.all(tasks);
+      }).then(function () {
         // A plain location.reload() can still be served from the browser's
-        // regular HTTP cache (separate from the Service Worker cache we
-        // just cleared) — appending a cache-busting query param forces a
-        // genuinely fresh navigation instead.
+        // regular HTTP cache -- appending a cache-busting query param
+        // forces a genuinely fresh navigation instead.
         window.location.href = window.location.origin + window.location.pathname + '?refresh=' + Date.now();
       });
     };
