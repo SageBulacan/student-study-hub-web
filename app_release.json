@@ -1,6 +1,6 @@
 {
-  "latestVersionCode": 21,
-  "latestVersionName": "1.2.21",
+  "latestVersionCode": 22,
+  "latestVersionName": "1.2.22",
   "downloadUrl": "https://sagebulacan.github.io/student-study-hub-web/StudentStudyHub.apk",
-  "releaseNotes": "Fixed Refresh Now not fully applying updates in standalone (Add to Home Screen) mode"
+  "releaseNotes": "Quiz scores now retry automatically if submitted while offline, instead of being lost"
 }
