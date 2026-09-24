@@ -1,6 +1,6 @@
 {
-  "latestVersionCode": 19,
-  "latestVersionName": "1.2.19",
+  "latestVersionCode": 20,
+  "latestVersionName": "1.2.20",
   "downloadUrl": "https://sagebulacan.github.io/student-study-hub-web/StudentStudyHub.apk",
-  "releaseNotes": "Subjects list now shows how many flashcards are due/new for spaced repetition review"
+  "releaseNotes": "Added search bar to Study Materials"
 }
