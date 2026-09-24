@@ -1,6 +1,6 @@
 {
-  "latestVersionCode": 18,
-  "latestVersionName": "1.2.18",
+  "latestVersionCode": 19,
+  "latestVersionName": "1.2.19",
   "downloadUrl": "https://sagebulacan.github.io/student-study-hub-web/StudentStudyHub.apk",
-  "releaseNotes": "Fixed bold text in quizzes (font has no true bold weight, now shown as accent color instead)"
+  "releaseNotes": "Subjects list now shows how many flashcards are due/new for spaced repetition review"
 }
