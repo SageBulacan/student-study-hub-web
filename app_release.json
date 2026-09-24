@@ -1,6 +1,6 @@
 {
-  "latestVersionCode": 22,
-  "latestVersionName": "1.2.22",
+  "latestVersionCode": 23,
+  "latestVersionName": "1.2.23",
   "downloadUrl": "https://sagebulacan.github.io/student-study-hub-web/StudentStudyHub.apk",
-  "releaseNotes": "Quiz scores now retry automatically if submitted while offline, instead of being lost"
+  "releaseNotes": "Clearer error message when quiz audio can't play (e.g. no internet)"
 }
