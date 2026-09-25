@@ -1,6 +1,6 @@
 {
-  "latestVersionCode": 24,
-  "latestVersionName": "1.2.24",
+  "latestVersionCode": 25,
+  "latestVersionName": "1.2.25",
   "downloadUrl": "https://sagebulacan.github.io/student-study-hub-web/StudentStudyHub.apk",
-  "releaseNotes": "Naka-fix na ang search bar sa Study Materials"
+  "releaseNotes": "Added bulk-add flashcards feature (paste question - answer pairs)"
 }
