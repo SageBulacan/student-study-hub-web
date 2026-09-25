@@ -1,6 +1,6 @@
 {
-  "latestVersionCode": 23,
-  "latestVersionName": "1.2.23",
+  "latestVersionCode": 24,
+  "latestVersionName": "1.2.24",
   "downloadUrl": "https://sagebulacan.github.io/student-study-hub-web/StudentStudyHub.apk",
-  "releaseNotes": "Clearer error message when quiz audio can't play (e.g. no internet)"
+  "releaseNotes": "Naka-fix na ang search bar sa Study Materials"
 }

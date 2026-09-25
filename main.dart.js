@@ -104434,7 +104434,7 @@ s=1
 break}j=m
 l=t.a.a(B.z.cW(0,A.jc(A.jb(j.e)).bV(0,j.w),null))
 k=A.bf(J.a7(l,"latestVersionName"))
-if(k!=null&&!J.d(k,"1.2.23")){q=k
+if(k!=null&&!J.d(k,"1.2.24")){q=k
 s=1
 break}q=null
 s=1
