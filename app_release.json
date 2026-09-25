@@ -1,6 +1,6 @@
 {
-  "latestVersionCode": 25,
-  "latestVersionName": "1.2.25",
+  "latestVersionCode": 26,
+  "latestVersionName": "1.2.26",
   "downloadUrl": "https://sagebulacan.github.io/student-study-hub-web/StudentStudyHub.apk",
-  "releaseNotes": "Added bulk-add flashcards feature (paste question - answer pairs)"
+  "releaseNotes": "Bulk-add flashcards: auto-detect Japanese/English even without a dash separator"
 }
