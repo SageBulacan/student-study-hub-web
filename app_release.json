@@ -1,6 +1,6 @@
 {
-  "latestVersionCode": 32,
-  "latestVersionName": "1.2.32",
+  "latestVersionCode": 33,
+  "latestVersionName": "1.2.33",
   "downloadUrl": "https://sagebulacan.github.io/student-study-hub-web/StudentStudyHub.apk",
-  "releaseNotes": "New Android build with Add to Study, My Vocabulary, Today's Review and Backup and Restore"
+  "releaseNotes": "Review history log; backups now include review history"
 }
