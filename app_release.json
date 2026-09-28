@@ -1,6 +1,6 @@
 {
-  "latestVersionCode": 30,
-  "latestVersionName": "1.2.30",
+  "latestVersionCode": 31,
+  "latestVersionName": "1.2.31",
   "downloadUrl": "https://sagebulacan.github.io/student-study-hub-web/StudentStudyHub.apk",
-  "releaseNotes": "Today's Review card on Learn tab; due-only review sessions"
+  "releaseNotes": "Backup & Restore of decks, favorites and study progress"
 }
