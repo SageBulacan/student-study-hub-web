@@ -1,6 +1,6 @@
 {
-  "latestVersionCode": 27,
-  "latestVersionName": "1.2.27",
+  "latestVersionCode": 28,
+  "latestVersionName": "1.2.28",
   "downloadUrl": "https://sagebulacan.github.io/student-study-hub-web/StudentStudyHub.apk",
-  "releaseNotes": "PDF viewer: rewrote pinch/double-tap zoom (layout-based, correct focal point)"
+  "releaseNotes": "Add to Study from word details; faster Subjects badges; scroll-safe study cards"
 }
