@@ -265,7 +265,18 @@
       // have its HTTP cache separately cleared than a regular browser tab.
       var basePath = window.location.pathname.replace(/[^/]*$/, '');
       var baseUrl = window.location.origin + basePath;
-      var criticalFiles = ['', 'main.dart.js', 'flutter_bootstrap.js', 'flutter_service_worker.js'];
+      // The icon fonts and manifests are refreshed too, not just the code: the
+      // icon font is tree-shaken to only the icons the app uses, so it
+      // changes whenever an update adds a new icon. If a stale copy is kept
+      // in cache, the new code arrives but the new icon shows up blank.
+      // (The big KleeOne text fonts are left out on purpose: ~2 MB each and
+      // they almost never change.)
+      var criticalFiles = [
+        '', 'main.dart.js', 'flutter_bootstrap.js', 'flutter_service_worker.js',
+        'assets/FontManifest.json', 'assets/AssetManifest.bin',
+        'assets/fonts/MaterialIcons-Regular.otf',
+        'assets/packages/cupertino_icons/assets/CupertinoIcons.ttf'
+      ];
       var refetchTasks = criticalFiles.map(function (f) {
         return fetch(baseUrl + f, { cache: 'reload' }).catch(function () {});
       });

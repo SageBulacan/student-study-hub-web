@@ -1,6 +1,6 @@
 {
-  "latestVersionCode": 29,
-  "latestVersionName": "1.2.29",
+  "latestVersionCode": 30,
+  "latestVersionName": "1.2.30",
   "downloadUrl": "https://sagebulacan.github.io/student-study-hub-web/StudentStudyHub.apk",
-  "releaseNotes": "My Vocabulary: learning status, review count and next review date"
+  "releaseNotes": "Today's Review card on Learn tab; due-only review sessions"
 }
