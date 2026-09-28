@@ -49,7 +49,7 @@
       container.innerHTML = '';
       container.oncontextmenu = function () { return false; };
       container.style.overflow = 'auto';
-      container.style.touchAction = 'pan-x pan-y pinch-zoom';
+      container.style.touchAction = 'pan-x pan-y';
 
       // Wrapper that gets transformed (scaled/panned) for zoom, separate
       // from the scrolling container itself.
@@ -76,106 +76,175 @@
         wrapper.appendChild(canvas);
       }
 
-      // --- Zoom: pinch (touch), ctrl+wheel (trackpad/desktop), double-tap ---
-      // Panning: one-finger drag once zoomed in.
-      let scale = 1, panX = 0, panY = 0;
-      let startDist = 0, startScale = 1, startMidX = 0, startMidY = 0;
-      let startPanX = 0, startPanY = 0;
-      let dragging = false, dragStartX = 0, dragStartY = 0;
+      // Listeners are tied to an AbortController so re-rendering into the
+      // same container (opening another PDF) removes the previous render's
+      // handlers instead of stacking duplicates, which would otherwise keep
+      // acting on a detached wrapper.
+      if (container._pdfZoomAbort) container._pdfZoomAbort.abort();
+      const ctrl = (typeof AbortController !== 'undefined') ? new AbortController() : null;
+      container._pdfZoomAbort = ctrl;
 
-      function clampPan() {
-        const rect = container.getBoundingClientRect();
-        const contentW = wrapper.scrollWidth * scale;
-        const contentH = wrapper.scrollHeight * scale;
-        // Allow panning until content edge reaches container edge, no further.
-        const minX = Math.min(0, rect.width - contentW);
-        const minY = Math.min(0, rect.height - contentH);
-        panX = Math.min(0, Math.max(panX, minX));
-        panY = Math.min(0, Math.max(panY, minY));
+      // --- Zoom + pan ---
+      // Zoom resizes the page column itself (real layout size) instead of
+      // using CSS transform: scale(). The previous transform-based version
+      // computed the pinch focal point without accounting for how far the
+      // container was already scrolled, so pinching while deep in a long
+      // PDF (e.g. page 6) threw the view to a completely different page,
+      // and a transform also can't grow the scrollable area, which forced a
+      // hand-rolled pan that fought the container's own scrolling.
+      // With layout zoom, native scrolling handles panning (with momentum),
+      // and the focal point is read from the wrapper's actual on-screen
+      // rect, so it's correct at any scroll position.
+      const MIN_ZOOM = 1;
+      const MAX_ZOOM = 4;
+      let scale = 1;
+
+      const canvases = Array.from(wrapper.querySelectorAll('canvas'));
+      const maxIntrinsicWidth = Math.max(1, ...canvases.map(function (c) { return c.width; }));
+      canvases.forEach(function (c) {
+        c.style.width = '100%';
+        c.style.maxWidth = 'none';
+        c.style.height = 'auto';
+        // Gap between pages scales with zoom too, so total content height
+        // scales uniformly and the focal point math stays exact.
+        c.style.margin = '0 0 calc(14px * var(--pdf-zoom, 1)) 0';
+      });
+      wrapper.style.transform = 'none';
+      wrapper.style.willChange = 'auto';
+      wrapper.style.margin = '0 auto';
+
+      function applyZoom() {
+        wrapper.style.setProperty('--pdf-zoom', String(scale));
+        wrapper.style.width = 'calc(min(100%, ' + maxIntrinsicWidth + 'px) * ' + scale + ')';
+        if (!wrapper.style.width) wrapper.style.width = (scale * 100) + '%';
+      }
+      applyZoom();
+
+      // Fractions (0..1) of the wrapper's size at a given screen point.
+      function anchorFromPoint(clientX, clientY) {
+        const r = wrapper.getBoundingClientRect();
+        return {
+          fx: r.width > 0 ? (clientX - r.left) / r.width : 0.5,
+          fy: r.height > 0 ? (clientY - r.top) / r.height : 0.5,
+        };
       }
 
-      function applyTransform() {
-        wrapper.style.transform = 'translate(' + panX + 'px,' + panY + 'px) scale(' + scale + ')';
+      // Sets a new zoom level, then scrolls so the content point described
+      // by (fx, fy) ends up under screen point (targetX, targetY). Passing
+      // the fingers' CURRENT midpoint as the target makes two-finger
+      // panning during a pinch work with the same code path.
+      function zoomAnchored(newScale, fx, fy, targetX, targetY) {
+        newScale = Math.min(Math.max(newScale, MIN_ZOOM), MAX_ZOOM);
+        if (newScale !== scale) {
+          scale = newScale;
+          applyZoom();
+        }
+        const r = wrapper.getBoundingClientRect(); // forces layout
+        container.scrollLeft += (r.left + fx * r.width) - targetX;
+        container.scrollTop += (r.top + fy * r.height) - targetY;
+      }
+
+      const listenerOpts = ctrl ? { signal: ctrl.signal } : {};
+      const passiveOpts = ctrl ? { signal: ctrl.signal, passive: true } : { passive: true };
+      const nonPassiveOpts = ctrl ? { signal: ctrl.signal, passive: false } : { passive: false };
+
+      // Block iOS/WebKit's own page-level pinch gesture inside the viewer.
+      ['gesturestart', 'gesturechange', 'gestureend'].forEach(function (type) {
+        container.addEventListener(type, function (e) { e.preventDefault(); }, nonPassiveOpts);
+      });
+
+      let pinch = null; // { startDist, startScale, fx, fy }
+      let pendingFrame = null;
+      let latestPinch = null;
+
+      // Tap tracking, so a double-tap is only recognized for two quick,
+      // stationary, single-finger taps -- not for the end of a pinch or
+      // of a scroll drag.
+      let multiTouchInGesture = false;
+      let tapMoved = false;
+      let tapStartX = 0, tapStartY = 0;
+      let lastTapTime = 0, lastTapX = 0, lastTapY = 0;
+
+      function fingerMetrics(touches) {
+        const a = touches[0], b = touches[1];
+        return {
+          dist: Math.hypot(a.clientX - b.clientX, a.clientY - b.clientY),
+          midX: (a.clientX + b.clientX) / 2,
+          midY: (a.clientY + b.clientY) / 2,
+        };
       }
 
       container.addEventListener('touchstart', function (e) {
-        if (e.touches.length === 2) {
-          const rect = container.getBoundingClientRect();
-          startDist = Math.hypot(
-            e.touches[0].clientX - e.touches[1].clientX,
-            e.touches[0].clientY - e.touches[1].clientY
-          );
-          startScale = scale;
-          startMidX = (e.touches[0].clientX + e.touches[1].clientX) / 2 - rect.left;
-          startMidY = (e.touches[0].clientY + e.touches[1].clientY) / 2 - rect.top;
-          startPanX = panX;
-          startPanY = panY;
-          dragging = false;
-        } else if (e.touches.length === 1 && scale > 1) {
-          dragging = true;
-          dragStartX = e.touches[0].clientX - panX;
-          dragStartY = e.touches[0].clientY - panY;
+        if (e.touches.length >= 2) {
+          multiTouchInGesture = true;
+          const m = fingerMetrics(e.touches);
+          const anchor = anchorFromPoint(m.midX, m.midY);
+          pinch = { startDist: Math.max(m.dist, 1), startScale: scale, fx: anchor.fx, fy: anchor.fy };
+        } else if (e.touches.length === 1 && !multiTouchInGesture) {
+          tapMoved = false;
+          tapStartX = e.touches[0].clientX;
+          tapStartY = e.touches[0].clientY;
         }
-      }, { passive: true });
+      }, passiveOpts);
 
       container.addEventListener('touchmove', function (e) {
-        if (e.touches.length === 2) {
+        if (pinch && e.touches.length >= 2) {
           e.preventDefault();
-          const dist = Math.hypot(
-            e.touches[0].clientX - e.touches[1].clientX,
-            e.touches[0].clientY - e.touches[1].clientY
-          );
-          const newScale = Math.min(Math.max(startScale * (dist / startDist), 1), 4);
-          // Keep the point under the fingers fixed while scaling.
-          panX = startMidX - (startMidX - startPanX) * (newScale / startScale);
-          panY = startMidY - (startMidY - startPanY) * (newScale / startScale);
-          scale = newScale;
-          clampPan();
-          applyTransform();
-        } else if (e.touches.length === 1 && dragging) {
-          e.preventDefault();
-          panX = e.touches[0].clientX - dragStartX;
-          panY = e.touches[0].clientY - dragStartY;
-          clampPan();
-          applyTransform();
-        }
-      }, { passive: false });
-
-      container.addEventListener('touchend', function (e) {
-        if (e.touches.length === 0) dragging = false;
-      });
-
-      container.addEventListener('wheel', function (e) {
-        if (e.ctrlKey) {
-          e.preventDefault();
-          const rect = container.getBoundingClientRect();
-          const mx = e.clientX - rect.left;
-          const my = e.clientY - rect.top;
-          const newScale = Math.min(Math.max(scale - e.deltaY * 0.01, 1), 4);
-          panX = mx - (mx - panX) * (newScale / scale);
-          panY = my - (my - panY) * (newScale / scale);
-          scale = newScale;
-          clampPan();
-          applyTransform();
-        }
-      }, { passive: false });
-
-      let lastTap = 0;
-      container.addEventListener('touchend', function (e) {
-        if (e.touches.length > 0) return;
-        const now = Date.now();
-        if (now - lastTap < 300) {
-          if (scale > 1) {
-            scale = 1;
-            panX = 0;
-            panY = 0;
-          } else {
-            scale = 2;
+          const m = fingerMetrics(e.touches);
+          latestPinch = { scale: pinch.startScale * (m.dist / pinch.startDist), midX: m.midX, midY: m.midY };
+          if (pendingFrame === null) {
+            pendingFrame = requestAnimationFrame(function () {
+              pendingFrame = null;
+              if (pinch && latestPinch) {
+                zoomAnchored(latestPinch.scale, pinch.fx, pinch.fy, latestPinch.midX, latestPinch.midY);
+              }
+            });
           }
-          applyTransform();
+        } else if (e.touches.length === 1 && !multiTouchInGesture) {
+          // One finger: leave it to native scrolling; just note whether it
+          // moved too far to still count as a tap.
+          if (Math.hypot(e.touches[0].clientX - tapStartX, e.touches[0].clientY - tapStartY) > 10) {
+            tapMoved = true;
+          }
         }
-        lastTap = now;
-      });
+      }, nonPassiveOpts);
+
+      container.addEventListener('touchend', function (e) {
+        if (e.touches.length < 2) pinch = null;
+        if (e.touches.length > 0) return; // other fingers still down
+
+        const wasCleanTap = !multiTouchInGesture && !tapMoved;
+        multiTouchInGesture = false;
+        if (!wasCleanTap) return;
+
+        const t = e.changedTouches[0];
+        const now = Date.now();
+        const isDoubleTap = (now - lastTapTime) < 300
+          && Math.hypot(t.clientX - lastTapX, t.clientY - lastTapY) < 40;
+
+        if (isDoubleTap) {
+          lastTapTime = 0;
+          const anchor = anchorFromPoint(t.clientX, t.clientY);
+          zoomAnchored(scale > 1.05 ? 1 : 2, anchor.fx, anchor.fy, t.clientX, t.clientY);
+        } else {
+          lastTapTime = now;
+          lastTapX = t.clientX;
+          lastTapY = t.clientY;
+        }
+      }, listenerOpts);
+
+      container.addEventListener('touchcancel', function () {
+        pinch = null;
+        multiTouchInGesture = false;
+      }, listenerOpts);
+
+      // Desktop: Ctrl + wheel / trackpad pinch.
+      container.addEventListener('wheel', function (e) {
+        if (!e.ctrlKey) return;
+        e.preventDefault();
+        const anchor = anchorFromPoint(e.clientX, e.clientY);
+        zoomAnchored(scale * Math.exp(-e.deltaY * 0.01), anchor.fx, anchor.fy, e.clientX, e.clientY);
+      }, nonPassiveOpts);
     };
   </script>
   <script>

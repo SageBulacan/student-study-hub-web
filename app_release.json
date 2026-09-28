@@ -1,6 +1,6 @@
 {
-  "latestVersionCode": 26,
-  "latestVersionName": "1.2.26",
+  "latestVersionCode": 27,
+  "latestVersionName": "1.2.27",
   "downloadUrl": "https://sagebulacan.github.io/student-study-hub-web/StudentStudyHub.apk",
-  "releaseNotes": "Bulk-add flashcards: auto-detect Japanese/English even without a dash separator"
+  "releaseNotes": "PDF viewer: rewrote pinch/double-tap zoom (layout-based, correct focal point)"
 }

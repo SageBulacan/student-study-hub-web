@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <!--
+    If you are serving your web app in a path other than the root, change the
+    href value below to reflect the base path you are serving from.
+
+    The path provided below has to start and end with a slash "/" in order for
+    it to work correctly.
+
+    For more details:
+    * https://developer.mozilla.org/en-US/docs/Web/HTML/Element/base
+
+    This is a placeholder for base href that will be replaced by the value of
+    the `--base-href` argument provided to `flutter build`.
+  -->
+  <base href="$FLUTTER_BASE_HREF">
+
+  <meta charset="UTF-8">
+  <meta content="IE=Edge" http-equiv="X-UA-Compatible">
+  <meta name="description" content="Offline-first Japanese learning app for students.">
+
+  <!-- iOS meta tags & icons -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="apple-mobile-web-app-title" content="Study Hub">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="favicon.png"/>
+
+  <title>Student Study Hub</title>
+  <link rel="manifest" href="manifest.json">
+
+  <!-- Required by syncfusion_flutter_pdfviewer for rendering PDFs on web. -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.6.347/pdf.min.js"></script>
+  <script type="text/javascript">
+    pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.6.347/pdf.worker.min.js";
+
+    // Renders every page of a PDF (given as raw bytes) into <canvas>
+    // elements appended to the container div — a custom, in-app viewer with
+    // no native browser PDF chrome, so there's no built-in Save/Download
+    // button exposed to the student (unlike opening the PDF directly via
+    // the browser's own PDF viewer).
+    window.renderPdfToContainer = async function (containerId, bytes) {
+      const container = document.getElementById(containerId);
+      if (!container) return;
+      container.innerHTML = '';
+      container.oncontextmenu = function () { return false; };
+      container.style.overflow = 'auto';
+      container.style.touchAction = 'pan-x pan-y pinch-zoom';
+
+      // Wrapper that gets transformed (scaled/panned) for zoom, separate
+      // from the scrolling container itself.
+      const wrapper = document.createElement('div');
+      wrapper.style.transformOrigin = '0 0';
+      wrapper.style.willChange = 'transform';
+      container.appendChild(wrapper);
+
+      const pdf = await pdfjsLib.getDocument({ data: bytes }).promise;
+      for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
+        const page = await pdf.getPage(pageNum);
+        const viewport = page.getViewport({ scale: 1.5 });
+        const canvas = document.createElement('canvas');
+        canvas.width = viewport.width;
+        canvas.height = viewport.height;
+        canvas.style.display = 'block';
+        canvas.style.margin = '0 auto 14px auto';
+        canvas.style.maxWidth = '100%';
+        canvas.style.height = 'auto';
+        canvas.style.boxShadow = '0 2px 8px rgba(0,0,0,0.18)';
+        canvas.oncontextmenu = function () { return false; };
+        const ctx = canvas.getContext('2d');
+        await page.render({ canvasContext: ctx, viewport: viewport }).promise;
+        wrapper.appendChild(canvas);
+      }
+
+      // --- Zoom: pinch (touch), ctrl+wheel (trackpad/desktop), double-tap ---
+      // Panning: one-finger drag once zoomed in.
+      let scale = 1, panX = 0, panY = 0;
+      let startDist = 0, startScale = 1, startMidX = 0, startMidY = 0;
+      let startPanX = 0, startPanY = 0;
+      let dragging = false, dragStartX = 0, dragStartY = 0;
+
+      function clampPan() {
+        const rect = container.getBoundingClientRect();
+        const contentW = wrapper.scrollWidth * scale;
+        const contentH = wrapper.scrollHeight * scale;
+        // Allow panning until content edge reaches container edge, no further.
+        const minX = Math.min(0, rect.width - contentW);
+        const minY = Math.min(0, rect.height - contentH);
+        panX = Math.min(0, Math.max(panX, minX));
+        panY = Math.min(0, Math.max(panY, minY));
+      }
+
+      function applyTransform() {
+        wrapper.style.transform = 'translate(' + panX + 'px,' + panY + 'px) scale(' + scale + ')';
+      }
+
+      container.addEventListener('touchstart', function (e) {
+        if (e.touches.length === 2) {
+          const rect = container.getBoundingClientRect();
+          startDist = Math.hypot(
+            e.touches[0].clientX - e.touches[1].clientX,
+            e.touches[0].clientY - e.touches[1].clientY
+          );
+          startScale = scale;
+          startMidX = (e.touches[0].clientX + e.touches[1].clientX) / 2 - rect.left;
+          startMidY = (e.touches[0].clientY + e.touches[1].clientY) / 2 - rect.top;
+          startPanX = panX;
+          startPanY = panY;
+          dragging = false;
+        } else if (e.touches.length === 1 && scale > 1) {
+          dragging = true;
+          dragStartX = e.touches[0].clientX - panX;
+          dragStartY = e.touches[0].clientY - panY;
+        }
+      }, { passive: true });
+
+      container.addEventListener('touchmove', function (e) {
+        if (e.touches.length === 2) {
+          e.preventDefault();
+          const dist = Math.hypot(
+            e.touches[0].clientX - e.touches[1].clientX,
+            e.touches[0].clientY - e.touches[1].clientY
+          );
+          const newScale = Math.min(Math.max(startScale * (dist / startDist), 1), 4);
+          // Keep the point under the fingers fixed while scaling.
+          panX = startMidX - (startMidX - startPanX) * (newScale / startScale);
+          panY = startMidY - (startMidY - startPanY) * (newScale / startScale);
+          scale = newScale;
+          clampPan();
+          applyTransform();
+        } else if (e.touches.length === 1 && dragging) {
+          e.preventDefault();
+          panX = e.touches[0].clientX - dragStartX;
+          panY = e.touches[0].clientY - dragStartY;
+          clampPan();
+          applyTransform();
+        }
+      }, { passive: false });
+
+      container.addEventListener('touchend', function (e) {
+        if (e.touches.length === 0) dragging = false;
+      });
+
+      container.addEventListener('wheel', function (e) {
+        if (e.ctrlKey) {
+          e.preventDefault();
+          const rect = container.getBoundingClientRect();
+          const mx = e.clientX - rect.left;
+          const my = e.clientY - rect.top;
+          const newScale = Math.min(Math.max(scale - e.deltaY * 0.01, 1), 4);
+          panX = mx - (mx - panX) * (newScale / scale);
+          panY = my - (my - panY) * (newScale / scale);
+          scale = newScale;
+          clampPan();
+          applyTransform();
+        }
+      }, { passive: false });
+
+      let lastTap = 0;
+      container.addEventListener('touchend', function (e) {
+        if (e.touches.length > 0) return;
+        const now = Date.now();
+        if (now - lastTap < 300) {
+          if (scale > 1) {
+            scale = 1;
+            panX = 0;
+            panY = 0;
+          } else {
+            scale = 2;
+          }
+          applyTransform();
+        }
+        lastTap = now;
+      });
+    };
+  </script>
+  <script>
+    // Called ONLY when the user explicitly taps "Refresh Now" in the app's
+    // update banner (never automatically) — purges the service worker +
+    // cache storage, then reloads once to fetch the latest deployed build.
+    // Manual, user-triggered refresh avoids the reload-loop bug we hit
+    // earlier with fully automatic update detection on iOS standalone PWAs.
+    window.forceAppRefresh = function () {
+      // Force-refetch the critical shell files with {cache: 'reload'} FIRST,
+      // bypassing the browser's low-level HTTP cache (a layer separate from
+      // -- and invisible to -- the Cache Storage API cleared below). Without
+      // this, the newly re-registered service worker's own precache fetch
+      // for these files can silently pull a stale copy back out of HTTP
+      // cache even right after Cache Storage was fully cleared -- this was
+      // the cause of "Refresh Now" appearing to do nothing in standalone
+      // (Add to Home Screen) mode, since that context seems less likely to
+      // have its HTTP cache separately cleared than a regular browser tab.
+      var basePath = window.location.pathname.replace(/[^/]*$/, '');
+      var baseUrl = window.location.origin + basePath;
+      var criticalFiles = ['', 'main.dart.js', 'flutter_bootstrap.js', 'flutter_service_worker.js'];
+      var refetchTasks = criticalFiles.map(function (f) {
+        return fetch(baseUrl + f, { cache: 'reload' }).catch(function () {});
+      });
+
+      Promise.all(refetchTasks).then(function () {
+        var tasks = [];
+        if (window.caches) {
+          tasks.push(caches.keys().then(function (keys) {
+            return Promise.all(keys.map(function (k) { return caches.delete(k); }));
+          }));
+        }
+        if (navigator.serviceWorker) {
+          tasks.push(navigator.serviceWorker.getRegistrations().then(function (regs) {
+            return Promise.all(regs.map(function (r) { return r.unregister(); }));
+          }));
+        }
+        return Promise.all(tasks);
+      }).then(function () {
+        // A plain location.reload() can still be served from the browser's
+        // regular HTTP cache -- appending a cache-busting query param
+        // forces a genuinely fresh navigation instead.
+        window.location.href = window.location.origin + window.location.pathname + '?refresh=' + Date.now();
+      });
+    };
+  </script>
+</head>
+<body>
+  <script src="flutter_bootstrap.js" async></script>
+</body>
+</html>
