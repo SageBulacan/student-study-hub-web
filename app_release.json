@@ -1,6 +1,6 @@
 {
-  "latestVersionCode": 38,
-  "latestVersionName": "1.2.38",
+  "latestVersionCode": 39,
+  "latestVersionName": "1.2.39",
   "downloadUrl": "https://sagebulacan.github.io/student-study-hub-web/StudentStudyHub.apk",
-  "releaseNotes": "New conjugation screen with English meanings for each form"
+  "releaseNotes": "Conjugation screen highlights the conjugated part of each form"
 }
