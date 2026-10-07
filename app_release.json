@@ -1,6 +1,6 @@
 {
-  "latestVersionCode": 42,
-  "latestVersionName": "1.2.42",
+  "latestVersionCode": 43,
+  "latestVersionName": "1.2.43",
   "downloadUrl": "https://sagebulacan.github.io/student-study-hub-web/StudentStudyHub.apk",
-  "releaseNotes": "AI Speaking Partner: easier to read text boxes"
+  "releaseNotes": "AI Speaking Partner now saves your conversations and corrections"
 }
