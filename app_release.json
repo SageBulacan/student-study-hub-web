@@ -1,6 +1,6 @@
 {
-  "latestVersionCode": 48,
-  "latestVersionName": "1.2.48",
+  "latestVersionCode": 49,
+  "latestVersionName": "1.2.49",
   "downloadUrl": "https://sagebulacan.github.io/student-study-hub-web/StudentStudyHub.apk",
-  "releaseNotes": "Backups now include your AI partner corrections and conversations"
+  "releaseNotes": "Conjugations: fixed 行く and ある, plus 7 new forms"
 }
