@@ -94,6 +94,7 @@
     if (socket) { try { socket.close(1000); } catch (e) {} }
     cleanupAudio();
     if (ctx) { try { ctx.close(); } catch (e) {} ctx = null; }
+    playHead = 0;
   }
 
   // Must be called from a tap (iPhone only allows audio/mic after a gesture).
@@ -102,6 +103,8 @@
     onEvent = typeof callback === 'function' ? callback : function () {};
     try {
       ctx = new (window.AudioContext || window.webkitAudioContext)();
+      playHead = 0; // new audio clock: forget the last session's timing
+      playing = [];
       await ctx.resume();
       stream = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true, noiseSuppression: true, channelCount: 1 } });
     } catch (e) {
@@ -133,7 +136,7 @@
     };
     socket.onmessage = handleMessage;
     socket.onclose = function (e) {
-      if (ws === socket) { ws = null; cleanupAudio(); if (ctx) { try { ctx.close(); } catch (x) {} ctx = null; } }
+      if (ws === socket) { ws = null; cleanupAudio(); if (ctx) { try { ctx.close(); } catch (x) {} ctx = null; } playHead = 0; }
       emit('closed', e.code + (e.reason ? ' ' + e.reason : ''));
     };
   }

@@ -1,6 +1,6 @@
 {
-  "latestVersionCode": 44,
-  "latestVersionName": "1.2.44",
+  "latestVersionCode": 45,
+  "latestVersionName": "1.2.45",
   "downloadUrl": "https://sagebulacan.github.io/student-study-hub-web/StudentStudyHub.apk",
-  "releaseNotes": "AI Speaking Partner: new Voice mode, talk with the AI in Japanese"
+  "releaseNotes": "Voice mode: fixed the mic staying silent after Stop"
 }
