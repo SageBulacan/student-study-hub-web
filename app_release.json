@@ -1,6 +1,6 @@
 {
-  "latestVersionCode": 45,
-  "latestVersionName": "1.2.45",
+  "latestVersionCode": 46,
+  "latestVersionName": "1.2.46",
   "downloadUrl": "https://sagebulacan.github.io/student-study-hub-web/StudentStudyHub.apk",
-  "releaseNotes": "Voice mode: fixed the mic staying silent after Stop"
+  "releaseNotes": "App Guide now explains the AI Speaking Partner"
 }
