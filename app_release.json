@@ -1,6 +1,6 @@
 {
-  "latestVersionCode": 52,
-  "latestVersionName": "1.2.52",
+  "latestVersionCode": 53,
+  "latestVersionName": "1.2.53",
   "downloadUrl": "https://sagebulacan.github.io/student-study-hub-web/StudentStudyHub.apk",
-  "releaseNotes": "Voice mode now works on Android too"
+  "releaseNotes": "New Study Stats: see your streak, accuracy and progress"
 }

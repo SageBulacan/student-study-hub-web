@@ -112669,7 +112669,7 @@ s=1
 break}j=m
 l=t.a.a(B.u.c3(0,A.h9(A.h8(j.e)).bR(0,j.w),null))
 k=A.b1(J.R(l,"latestVersionName"))
-if(k!=null&&!J.d(k,"1.2.52")){q=k
+if(k!=null&&!J.d(k,"1.2.53")){q=k
 s=1
 break}q=null
 s=1
