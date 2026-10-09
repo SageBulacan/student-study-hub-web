@@ -1,6 +1,6 @@
 {
-  "latestVersionCode": 51,
-  "latestVersionName": "1.2.51",
+  "latestVersionCode": 52,
+  "latestVersionName": "1.2.52",
   "downloadUrl": "https://sagebulacan.github.io/student-study-hub-web/StudentStudyHub.apk",
-  "releaseNotes": "AI partner: new Settings (correction mode, AI persona) and Conversation Review"
+  "releaseNotes": "Voice mode now works on Android too"
 }
