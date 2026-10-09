@@ -1,6 +1,6 @@
 {
-  "latestVersionCode": 53,
-  "latestVersionName": "1.2.53",
+  "latestVersionCode": 54,
+  "latestVersionName": "1.2.54",
   "downloadUrl": "https://sagebulacan.github.io/student-study-hub-web/StudentStudyHub.apk",
-  "releaseNotes": "New Study Stats: see your streak, accuracy and progress"
+  "releaseNotes": "Study Stats is now in the Learn tab"
 }
