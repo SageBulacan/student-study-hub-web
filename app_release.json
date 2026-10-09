@@ -1,6 +1,6 @@
 {
-  "latestVersionCode": 50,
-  "latestVersionName": "1.2.50",
+  "latestVersionCode": 51,
+  "latestVersionName": "1.2.51",
   "downloadUrl": "https://sagebulacan.github.io/student-study-hub-web/StudentStudyHub.apk",
-  "releaseNotes": "New look for the AI Speaking Partner: topics, corrections in the chat, voice waveform"
+  "releaseNotes": "AI partner: new Settings (correction mode, AI persona) and Conversation Review"
 }
