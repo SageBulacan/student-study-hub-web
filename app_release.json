@@ -1,6 +1,6 @@
 {
-  "latestVersionCode": 56,
-  "latestVersionName": "1.2.56",
+  "latestVersionCode": 57,
+  "latestVersionName": "1.2.57",
   "downloadUrl": "https://sagebulacan.github.io/student-study-hub-web/StudentStudyHub.apk",
-  "releaseNotes": "Send Feedback: clearer Send button"
+  "releaseNotes": "Safer shared devices: another student's AI key and chats are removed at login"
 }
