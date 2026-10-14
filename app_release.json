@@ -1,6 +1,6 @@
 {
-  "latestVersionCode": 55,
-  "latestVersionName": "1.2.55",
+  "latestVersionCode": 56,
+  "latestVersionName": "1.2.56",
   "downloadUrl": "https://sagebulacan.github.io/student-study-hub-web/StudentStudyHub.apk",
-  "releaseNotes": "New: Send Feedback in More, report bugs or share ideas"
+  "releaseNotes": "Send Feedback: clearer Send button"
 }
