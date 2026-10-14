@@ -1,6 +1,6 @@
 {
-  "latestVersionCode": 52,
-  "latestVersionName": "1.2.52",
+  "latestVersionCode": 54,
+  "latestVersionName": "1.2.54",
   "downloadUrl": "https://sagebulacan.github.io/student-study-hub-web/StudentStudyHub.apk",
-  "releaseNotes": "New: talk with the AI Speaking Partner using your voice!"
+  "releaseNotes": "New Study Stats: see your streak, accuracy and progress (Learn tab)"
 }
