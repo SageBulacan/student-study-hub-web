@@ -1,6 +1,6 @@
 {
-  "latestVersionCode": 58,
-  "latestVersionName": "1.2.58",
+  "latestVersionCode": 59,
+  "latestVersionName": "1.2.59",
   "downloadUrl": "https://sagebulacan.github.io/student-study-hub-web/StudentStudyHub.apk",
-  "releaseNotes": "New: Terms of Use and Privacy consent screen, and More > Privacy"
+  "releaseNotes": "Privacy: quizzes follow your quiz-score consent"
 }
