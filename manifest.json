@@ -1,6 +1,6 @@
 {
-    "name": "Student Study Hub",
-    "short_name": "Study Hub",
+    "name": "Sage Study Hub",
+    "short_name": "Sage Study Hub",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#222831",
