@@ -141,10 +141,17 @@
     };
   }
 
+  // Sends a text note into the running conversation (e.g. a correction the
+  // app found), so the AI reacts to it out loud. Returns false if not live.
+  function sendText(text) {
+    if (!ws || ws.readyState !== WebSocket.OPEN || !text) return false;
+    try { ws.send(JSON.stringify({ realtimeInput: { text: String(text) } })); return true; } catch (e) { return false; }
+  }
+
   function supported() {
     return !!(window.WebSocket && navigator.mediaDevices && navigator.mediaDevices.getUserMedia &&
       (window.AudioContext || window.webkitAudioContext));
   }
 
-  window.liveVoice = { start: start, stop: stop, supported: supported };
+  window.liveVoice = { start: start, stop: stop, supported: supported, sendText: sendText };
 })();
