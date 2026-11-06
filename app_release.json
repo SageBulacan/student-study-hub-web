@@ -1,6 +1,6 @@
 {
-  "latestVersionCode": 64,
-  "latestVersionName": "1.2.64",
+  "latestVersionCode": 69,
+  "latestVersionName": "1.2.69",
   "downloadUrl": "https://sagebulacan.github.io/student-study-hub-web/StudentStudyHub.apk",
-  "releaseNotes": "Bigger word pictures in the Dictionary (tap to zoom), new Sage Study Hub name and icon, read-aloud, AI Partner age consent"
+  "releaseNotes": "AI Partner: Gemini 3.8 Live, mas matalinong correction, Mock Interview"
 }

@@ -3,13 +3,13 @@ const MANIFEST = 'flutter-app-manifest';
 const TEMP = 'flutter-temp-cache';
 const CACHE_NAME = 'flutter-app-cache';
 
-const RESOURCES = {"flutter_bootstrap.js": "e02dd345f3e7d553f5f5d303473f27a1",
-"live_voice.js": "f72a8ebd2a7f14641bc5976807cfa31b",
-"version.json": "87af10ef9059688fec5178821b3a7642",
+const RESOURCES = {"flutter_bootstrap.js": "7207499778990476658cb4bb25e04a83",
+"live_voice.js": "b7325624ec5031e29a48d39db3342615",
+"version.json": "afa811dd67fb68782a9573c0c7087fb8",
 "index.html": "26e93e220c86144ef91e924f00b9b6f3",
 "/": "26e93e220c86144ef91e924f00b9b6f3",
 "apple-touch-icon.png": "95c797f38f14eb040a0cb4271701261d",
-"main.dart.js": "fcc328838ccd75b9149b67a88cf8b065",
+"main.dart.js": "f77dc4eb0111a3c692c03f9eccdd475d",
 "sqlite3.wasm": "2e9fc1ccbb9d15199fccf405b0ceee53",
 "flutter.js": "f393d3c16b631f36852323de8e583132",
 "favicon.png": "4b5916655202a86e7cddc2354796a984",
@@ -39,16 +39,6 @@ const RESOURCES = {"flutter_bootstrap.js": "e02dd345f3e7d553f5f5d303473f27a1",
 "assets/assets/images/logo.png": "30c0a81ada0dbea62e4e2c7d94cb290e",
 "assets/assets/fonts/KleeOne-SemiBold-Subset.ttf": "57a67fc4c6fbba5d19af3e6f8462915b",
 "assets/assets/fonts/KleeOne-Regular-Subset.ttf": "1beb046685a6f7a83a56c78fd3c05ef8",
-"canvaskit/skwasm.js": "694fda5704053957c2594de355805228",
-"canvaskit/skwasm.js.symbols": "262f4827a1317abb59d71d6c587a93e2",
-"canvaskit/canvaskit.js.symbols": "48c83a2ce573d9692e8d970e288d75f7",
-"canvaskit/skwasm.wasm": "9f0c0c02b82a910d12ce0543ec130e60",
-"canvaskit/chromium/canvaskit.js.symbols": "a012ed99ccba193cf96bb2643003f6fc",
-"canvaskit/chromium/canvaskit.js": "671c6b4f8fcc199dcc551c7bb125f239",
-"canvaskit/chromium/canvaskit.wasm": "b1ac05b29c127d86df4bcfbf50dd902a",
-"canvaskit/canvaskit.js": "66177750aff65a66cb07bb44b8c6422b",
-"canvaskit/canvaskit.wasm": "1f237a213d7370cf95f443d896176460",
-"canvaskit/skwasm.worker.js": "89990e8c92bcb123999aa81f7e203b1c"};
 // The application shell files that are downloaded before a service worker can
 // start.
 const CORE = ["main.dart.js",

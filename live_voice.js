@@ -9,6 +9,8 @@
   // While "holding", AI audio is kept back (not played) until the app has
   // checked the student's sentence: then it is played, or thrown away.
   let hold = false, held = [];
+  // The model of the current connection, and whether its setup is done.
+  let currentModel = '', live = false;
 
   function emit(type, text) { try { onEvent(type, text == null ? '' : String(text)); } catch (e) {} }
 
@@ -69,7 +71,7 @@
     const text = typeof event.data === 'string' ? event.data : await event.data.text();
     let msg;
     try { msg = JSON.parse(text); } catch (e) { return; }
-    if (msg.setupComplete) { emit('status', 'listening'); return; }
+    if (msg.setupComplete) { live = true; emit('model', currentModel); emit('status', 'listening'); return; }
     const sc = msg.serverContent;
     if (sc) {
       if (sc.interrupted) { stopPlayback(); emit('interrupted', ''); }
@@ -94,6 +96,7 @@
 
   function stop() {
     hold = false;
+    live = false;
     stopPlayback();
     const socket = ws;
     ws = null;
@@ -119,31 +122,51 @@
       return;
     }
     emit('status', 'connecting');
+    // [model] may be a comma-separated list, best first: if a model cannot
+    // start (daily limit reached, not available...), the next one is tried
+    // on the same microphone, without another tap.
+    const models = String(model).split(',').map(function (m) { return m.trim(); }).filter(Boolean);
+    connect(key, models, 0, systemPrompt);
+  }
+
+  function connect(key, models, index, systemPrompt) {
     const socket = new WebSocket(WS_BASE + '?key=' + encodeURIComponent(key));
     ws = socket;
+    live = false;
+    currentModel = models[index] || '';
     socket.onopen = function () {
+      if (ws !== socket) return;
       socket.send(JSON.stringify({ setup: {
-        model: 'models/' + model,
+        model: 'models/' + currentModel,
         generationConfig: { responseModalities: ['AUDIO'] },
         systemInstruction: { parts: [{ text: systemPrompt }] },
         inputAudioTranscription: {},
         outputAudioTranscription: {},
       } }));
+      if (processor || !ctx || !stream) return; // microphone already wired
       source = ctx.createMediaStreamSource(stream);
       processor = ctx.createScriptProcessor(4096, 1, 1);
       sink = ctx.createGain(); sink.gain.value = 0;
       processor.onaudioprocess = function (e) {
-        if (ws !== socket || socket.readyState !== WebSocket.OPEN) return;
+        const s = ws;
+        if (!s || !live || s.readyState !== WebSocket.OPEN) return;
         if (aiSpeaking()) return; // pause the mic while the AI talks (no echo)
         const pcm = to16kPcm(e.inputBuffer.getChannelData(0), ctx.sampleRate);
-        socket.send(JSON.stringify({ realtimeInput: { audio: { data: toBase64(pcm), mimeType: 'audio/pcm;rate=16000' } } }));
+        s.send(JSON.stringify({ realtimeInput: { audio: { data: toBase64(pcm), mimeType: 'audio/pcm;rate=16000' } } }));
       };
       source.connect(processor); processor.connect(sink); sink.connect(ctx.destination);
     };
     socket.onmessage = handleMessage;
     socket.onclose = function (e) {
-      if (ws === socket) { ws = null; cleanupAudio(); if (ctx) { try { ctx.close(); } catch (x) {} ctx = null; } playHead = 0; }
-      emit('closed', e.code + (e.reason ? ' ' + e.reason : ''));
+      const reason = e.code + (e.reason ? ' ' + e.reason : '');
+      if (ws === socket && !live && index + 1 < models.length) {
+        // This model could not start: try the next one.
+        emit('fallback', currentModel + '|' + reason);
+        connect(key, models, index + 1, systemPrompt);
+        return;
+      }
+      if (ws === socket) { ws = null; live = false; cleanupAudio(); if (ctx) { try { ctx.close(); } catch (x) {} ctx = null; } playHead = 0; }
+      emit('closed', reason);
     };
   }
 
