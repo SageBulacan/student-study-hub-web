@@ -6,6 +6,9 @@
   const WS_BASE = 'wss://generativelanguage.googleapis.com/ws/google.ai.generativelanguage.v1beta.GenerativeService.BidiGenerateContent';
   let ws = null, ctx = null, stream = null, processor = null, source = null, sink = null;
   let playHead = 0, playing = [], onEvent = function () {};
+  // While "holding", AI audio is kept back (not played) until the app has
+  // checked the student's sentence: then it is played, or thrown away.
+  let hold = false, held = [];
 
   function emit(type, text) { try { onEvent(type, text == null ? '' : String(text)); } catch (e) {} }
 
@@ -32,6 +35,7 @@
   function aiSpeaking() { return ctx && playHead > ctx.currentTime + 0.05; }
 
   function playPcm(b64) {
+    if (hold) { held.push(b64); return; }
     const bin = atob(b64);
     const bytes = new Uint8Array(bin.length);
     for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
@@ -55,6 +59,7 @@
   }
 
   function stopPlayback() {
+    held = [];
     playing.forEach(function (n) { try { n.stop(); } catch (e) {} });
     playing = [];
     if (ctx) playHead = ctx.currentTime;
@@ -67,7 +72,7 @@
     if (msg.setupComplete) { emit('status', 'listening'); return; }
     const sc = msg.serverContent;
     if (sc) {
-      if (sc.interrupted) stopPlayback();
+      if (sc.interrupted) { stopPlayback(); emit('interrupted', ''); }
       if (sc.inputTranscription && sc.inputTranscription.text) emit('user', sc.inputTranscription.text);
       if (sc.outputTranscription && sc.outputTranscription.text) emit('ai', sc.outputTranscription.text);
       const parts = (sc.modelTurn && sc.modelTurn.parts) || [];
@@ -88,6 +93,7 @@
   }
 
   function stop() {
+    hold = false;
     stopPlayback();
     const socket = ws;
     ws = null;
@@ -148,10 +154,20 @@
     try { ws.send(JSON.stringify({ realtimeInput: { text: String(text) } })); return true; } catch (e) { return false; }
   }
 
+  function setHold(on) { hold = !!on; }
+
+  // Ends holding: plays the kept-back audio, or drops it (play = false).
+  function release(play) {
+    hold = false;
+    const kept = held;
+    held = [];
+    if (play && ctx) kept.forEach(playPcm);
+  }
+
   function supported() {
     return !!(window.WebSocket && navigator.mediaDevices && navigator.mediaDevices.getUserMedia &&
       (window.AudioContext || window.webkitAudioContext));
   }
 
-  window.liveVoice = { start: start, stop: stop, supported: supported, sendText: sendText };
+  window.liveVoice = { start: start, stop: stop, supported: supported, sendText: sendText, setHold: setHold, release: release };
 })();
